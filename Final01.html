@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Web Configuration</title>
+	<link rel="stylesheet" href="channels.css">
+	<link href='https://fonts.googleapis.com/css?family=Abril Fatface' rel='stylesheet'>
+</head>
+
+<div class="header">
+	<h1>IoT Gateway Configuration</h1>
+</div>
+
+<body onload="ItemsInLocalStorage();fn1();fn2()">
+	<script>
+		var obj;
+		var ui = 0;
+		var InputElement;
+		var mqtt_arr = [1, 2, 3, 4, 5, 6];
+	</script>
+	<!-- Tab links -->
+	<div class="tab">
+		<button class="tablinks" onclick="openTab(event, 'SerialConfigurationEvent')">SERIAL CONFIGURATION</button>
+		<button class="tablinks" onclick="openTab(event, 'ModbusEvent')">MODBUS</button>
+		<button class="tablinks" onclick="openTab(event, 'DataModeEvent')">DATAMODE</button>
+		<button class="tablinks" onclick="openTab(event, 'ConnectivityEvent')">CONNECTIVITY</button>
+		<button class="tablinks" onclick="openTab(event, 'AppEvent')">APPLICATION</button>
+		<button class="tablinks" onclick="openTab(event, 'LiveEvent')">LIVE VIEW</button>
+		<button class="tablinks" onclick="openTab(event, 'WriteSummary')">SUMMARY</button>
+	</div>
+	<!-- serial communication Tab content -->
+	<div id="SerialConfigurationEvent" class="tabcontent">
+		<form id="SerialConfigurationForm" name="SerialForm" method="post" enctype='application/json' action="/serial">
+			<div class="row">
+				<div class="col-10">
+					<button class="submit button2" onclick="fn1();validateF1()"><span>Submit</span></button>
+				</div>
+			</div>
+			</BR>
+			<div class="row">
+				<div class="col-10">
+					<label for="brate">Baudrate</label>
+				</div>
+				<div class="col-90">
+					<select name="BR" id="brr">
+						<optgroup style="font-family:verdana">
+							<option disabled hidden></option>
+							<option></option>
+							<option value="300"> 300</option>
+							<option value="600"> 600</option>
+							<option value="1200"> 1200</option>
+							<option value="2400"> 2400</option>
+							<option value="4800"> 4800</option>
+							<option value="9600"> 9600</option>
+							<option value="19200"> 19200</option>
+							<option value="38400"> 38400</option>
+							<option value="57600"> 57600</option>
+							<option value="115200"> 115200</option>
+						</optgroup>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-10">
+					<label for="config">Configuration</label>
+				</div>
+				<div class="col-90">
+					<select name="CF" id="cff">
+						<optgroup style="font-family:verdana">
+							<option disabled hidden selected></option>
+							<option></option>
+							<option value=0> DATABITS=5, PARITY=None, STOPBITS=1</option>
+							<option value=1> DATABITS=6, PARITY=None, STOPBITS=1</option>
+							<option value=2> DATABITS=7, PARITY=None, STOPBITS=1</option>
+							<option value=3 selected>DATABITS=8, PARITY=None, STOPBITS=1</option>
+							<option value=4> DATABITS=5, PARITY=None, STOPBITS=2</option>
+							<option value=5> DATABITS=6, PARITY=None, STOPBITS=2</option>
+							<option value=6> DATABITS=7, PARITY=None, STOPBITS=2</option>
+							<option value=7> DATABITS=8, PARITY=None, STOPBITS=2</option>
+							<option value=8> DATABITS=5, PARITY=Even, STOPBITS=1</option>
+							<option value=9> DATABITS=6, PARITY=Even, STOPBITS=1</option>
+							<option value=10> DATABITS=7, PARITY=Even, STOPBITS=1</option>
+							<option value=11> DATABITS=8, PARITY=Even, STOPBITS=1</option>
+							<option value=12> DATABITS=5, PARITY=Even, STOPBITS=2</option>
+							<option value=13> DATABITS=6, PARITY=Even, STOPBITS=2</option>
+							<option value=14> DATABITS=7, PARITY=Even, STOPBITS=2</option>
+							<option value=15> DATABITS=8, PARITY=Even, STOPBITS=2</option>
+							<option value=16> DATABITS=5, PARITY=Odd, STOPBITS=1</option>
+							<option value=17> DATABITS=6, PARITY=Odd, STOPBITS=1</option>
+							<option value=18> DATABITS=7, PARITY=Odd, STOPBITS=1</option>
+							<option value=19> DATABITS=8, PARITY=Odd, STOPBITS=1</option>
+							<option value=20> DATABITS=5, PARITY=Odd, STOPBITS=2</option>
+							<option value=21> DATABITS=6, PARITY=Odd, STOPBITS=2</option>
+							<option value=22> DATABITS=7, PARITY=Odd, STOPBITS=2</option>
+							<option value=23> DATABITS=8, PARITY=Odd, STOPBITS=2</option>
+						</optgroup>
+					</select>
+				</div>
+			</div>
+		</form>
+	</div>
+
+
+	<!-- Modbus Tab content -->
+	<div id="ModbusEvent" class="tabcontent">
+		<form id="modbusform" name="ChannelForm" method="post" enctype='application/json' action="/channels">
+			<div class="row">
+				<div class="col-10">
+					<button class="submit button2"
+						onclick="slavelocal();slaveTable();liveviewtable();validateF2();validatechannel()"><span>Submit</span></button>
+				</div>
+			</div>
+			</BR>
+			<div class="row">
+				<div class="col-10">
+					<label for="noofslaves">Slaves</label>
+				</div>
+				<div class="col-90">
+					<select name="SC" id="slavecount" onchange="GenerateSlaveTable()">
+						<optgroup style="font-family:verdana">
+							<option disabled hidden selected></option>
+							<option></option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+						</optgroup>
+					</select>
+				</div>
+			</div>
+			</BR>
+
+		</form>
+	</div>
+
+	<!-- Client Datamode Tab content -->
+	<div id="DataModeEvent" class="tabcontent">
+		<form id="DataMode" name="DataModeForm" method="post" enctype='application/json' action="/datamode">
+			<div class="row">
+				<div class="col-10">
+					<button class="submit button2" onclick="fn2();validateF3()"><span>Submit</span></button>
+				</div>
+				</BR>
+				</BR>
+				<div class="col-10">
+				</div>
+				<div class="col-10">
+					<input type="radio" id="Mqtt" name="DM" value="Mqtt" onchange="GenerateMqttInfo()"> MQTT
+				</div>
+				<div class="col-10">
+					<input type="radio" id="WbSk" name="DM" value="Web Socket" onchange="GenerateMqttInfo()"> Web Socket
+				</div>
+			</div>
+			</BR>
+		</form>
+	</div>
+
+	<!-- Connectivity Tab content -->
+	<div id="ConnectivityEvent" class="tabcontent">
+		<form id="Connectivity" name="ConnectivityForm" method="post" enctype='application/json' action="/connectivity">
+			<div class="row">
+				<div class="col-10">
+					<button class="submit button2" onclick="fn4()"><span>Submit</span></button>
+				</div>
+				</BR>
+				</BR>
+				<div class="col-10">
+				</div>
+				<div class="col-10">
+					<input type="radio" id="Ethernet" name="CN" value="0" onchange="GenerateConnectivityInfo()">
+					Ethernet
+				</div>
+				<div class="col-10">
+					<input type="radio" id="WiFi" name="CN" value="1" onchange="GenerateConnectivityInfo()"> WiFi
+				</div>
+				<div class="col-10">
+					<input type="radio" id="Cellular" name="CN" value="2" onchange="GenerateConnectivityInfo()">
+					Cellular
+				</div>
+			</div>
+			</BR>
+		</form>
+	</div>
+
+	<!-- Application Tab content -->
+	<div id="AppEvent" class="tabcontent">
+		<form name="AppForm" method="post" enctype='application/json' action="/application">
+			<div class="row">
+				<div class="col-10">
+					<button class="submit button2" onclick="fn3();validateF5()"><span>Submit</span></button>
+				</div>
+			</div>
+			</BR>
+			<div class="row">
+				<div class="col-10">
+					<label for="scanrate">Scan Rate </label>
+				</div>
+				<div class="col-90">
+					<input type="text" id="scanrate" name="SR" placeholder="1Second to 1000Seconds" required>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-10">
+					<label for="publishrate">Publish Rate</label>
+				</div>
+				<div class="col-90">
+					<input type="text" id="publishrate" name="PR" placeholder="1Second to 1000Seconds" required>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-10">
+					<label for="lograte">Log Rate</label>
+				</div>
+				<div class="col-90">
+					<input type="text" id="lograte" name="LR" placeholder="1Second to 1000Seconds" required>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- LIVE VIEW Tab content -->
+	<div id="LiveEvent" class="tabcontent">
+		<form id="liveviewform" name="LiveView" method="post" enctype='application/json' action="/liveview">
+			<table id="livetable" name="LiveValues" style="width:60%;">
+				<tr>
+					<th style="width:5%;border: 1px solid #333;">slave id</th>
+					<th style="width:5%;border: 1px solid #333;">sl#</th>
+					<th style="width:10%;border: 1px solid #333;">var-name</th>
+					<th style="width:10%;border: 1px solid #333;">value</th>
+					<th style="width:10%;border: 1px solid #333;">unit</th>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<!--##########################################################-->
+	<!-- Writing Summary in the tab -->
+	<div id="WriteSummary" class="tabcontent">
+		<form name="SummaryForm" id="summaryid" method="post" enctype='application/json' action="/application">
+
+			<p></p>
+			<h3>SERIAL CONFIGURATION</h3>
+			<div class="row">
+				<div class="col-10">
+					<label for="a">Baudrate </label>
+				</div>
+				<div class="col-90">
+					<input type="text" name="a" id="a" value="">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-10">
+					<label for="b">Configuration </label>
+				</div>
+				<div class="col-90">
+					<input type="text" name="mb" id="b" value="">
+				</div>
+			</div>
+			<h3>MODBUS</h3>
+			<div class="row">
+				<div class="col-10">
+					<label for="c">Slave Count </label>
+				</div>
+				<div class="col-90">
+					<input type="text" id="c" value="">
+				</div>
+			</div>
+			<!--  
+				//if asked for slave-channels in summary tab this should be uncommented\\	-->
+			<div id="slavesummarydiv">
+
+			</div>
+			<h3>DATAMODE</h3>
+
+			<div id="dmhead">
+
+			</div>
+
+			<div id="kiki">
+
+			</div>
+			<h3>CONNECTIVITY</h3>
+			<div>
+				<div id="DM1">
+
+				</div>
+				<div id="kiki1">
+
+				</div>
+				<div id="kiki2">
+
+				</div>
+			</div>
+			<p id="demo"> </p>
+
+			<div id="fooBar">
+
+			</div>
+
+			<!-----Application33333333333333333333333333333333333#########-->
+			<h3>APPLICATION</h3>
+			</BR>
+			<div class="row">
+				<div class="col-10">
+					<label for="scanrate">Scan Rate </label>
+				</div>
+				<div class="col-90">
+					<input type="text" id="a1" name="SR" value="">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-10">
+					<label for="publishrate">Publish Rate</label>
+				</div>
+				<div class="col-90">
+					<input type="text" id="a2" name="PR" value="">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-10">
+					<label for="lograte">Log Rate</label>
+				</div>
+				<div class="col-90">
+					<input type="text" id="a3" name="LR" value="">
+				</div>
+			</div>
+		</form>
+	</div>
+	<script>
+		function ItemsInLocalStorage() {
+			/////////baudrate
+			var select = document.getElementById("brr");
+			select.options[1].innerHTML = localStorage.getItem('baudrateph');
+			select.options[1].disabled = true;
+			select.options[1].selected = true;
+			select.options[1].hidden = true;
+			//////////Configuration
+			var obj1 = document.getElementById("cff");
+			obj1.options[1].innerHTML = localStorage.getItem('configurationph');
+			obj1.options[1].disabled = true;
+			obj1.options[1].selected = true;
+			obj1.options[1].hidden = true;
+			///////////slavecount
+			var SlaveCount = document.getElementById("slavecount");
+			SlaveCount.options[1].innerHTML = localStorage.getItem('slavecountph');
+			SlaveCount.options[1].disabled = true;
+			SlaveCount.options[1].selected = true;
+			SlaveCount.options[1].hidden = true;
+			//////////DataMode
+			if (localStorage.getItem('mqttcheck') == 1) {
+				document.getElementById('Mqtt').checked = true;
+				GenerateMqttInfo();
+				var opera = document.getElementsByClassName("col-91");
+				for (l = 0; l < 6; l++) {
+					opera[l].firstChild.value = localStorage.getItem('opera' + l)
+				}
+			}
+			if (localStorage.getItem('mqttcheck') == 0) {
+				GenerateMqttInfo();
+				document.getElementById('WbSk').checked = true
+			}
+			///////////Connectivity
+			if (localStorage.getItem('connectivitycheck') == 'E') {
+				document.getElementById("Ethernet").checked = true;
+				GenerateConnectivityInfo(); fn4();
+			}
+			if (localStorage.getItem('connectivitycheck') == 'W') {
+				document.getElementById("WiFi").checked = true;
+				GenerateConnectivityInfo();
+				var opera1 = document.getElementsByClassName("col-89");
+				opera1[0].firstChild.value = localStorage.getItem('opera1' + 0);
+				opera1[1].firstChild.value = localStorage.getItem('opera1' + 1); fn4();
+			}
+			if (localStorage.getItem('connectivitycheck') == 'C') {
+				document.getElementById("Cellular").checked = true;
+				GenerateConnectivityInfo();//fn4();
+				var opera2 = document.getElementsByClassName("col-89");
+				opera2[0].firstChild.value = localStorage.getItem('opera2' + 0);
+				opera2[1].firstChild.value = localStorage.getItem('opera2' + 1);
+				opera2[2].firstChild.value = localStorage.getItem('opera2' + 1); fn4();
+			}
+			///////application
+			document.getElementById("scanrate").value = localStorage.getItem('scanrateph');
+			document.getElementById("publishrate").value = localStorage.getItem('publishrateph');
+			document.getElementById("lograte").value = localStorage.getItem('lograteph');
+			fn3();
+			///////modnus
+			GenerateSlaveTable();
+			for (var g = 0; g < localStorage.getItem('slavecountph'); g++) {
+				var ccount = localStorage.getItem('c-count' + g);
+				document.getElementById('c' + g).options[1].innerHTML = ccount
+				document.getElementById('c' + g).options[1].disabled = true
+				document.getElementById('c' + g).options[1].selected = true
+				document.getElementById('c' + g).options[1].hidden = true
+				document.getElementById('sinp' + g).value = localStorage.getItem('sid' + g);
+				//channeltable();
+				thisfun(g);
+				for (var q = 0; q < 9; q++) {
+					for (var e = 0; e < 8; e++) {
+						if (localStorage.getItem('tr' + q + 'h' + e + g)) {
+							if (e >= ccount) { localStorage.removeItem('tr' + q + 'h' + e + g) }
+							document.getElementById('tr' + q + 'h' + e + g).value = localStorage.getItem('tr' + q + 'h' + e + g);
+						}
+					}
+				}
+			}
+			slaveTable();
+			liveviewtable();
+			$("#summaryid :input").prop("disabled", true);
+			var select = document.getElementById("brr");
+			select.required = true;
+		}
+		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%//
+		function fn1() {
+			var select = document.getElementById("brr");
+			//select.required = true;
+			var optionselected = select.options[select.selectedIndex];
+			localStorage.setItem('baudrateph', optionselected.text)
+			document.getElementById("a").value = localStorage.getItem('baudrateph');
+			var obj1 = document.getElementById("cff");
+			var p1 = obj1.options[obj1.selectedIndex];
+			localStorage.setItem('configurationph', p1.text)
+			document.getElementById("b").setAttribute("value", localStorage.getItem('configurationph'));
+		}
+		function validateF1() {
+			var mod_val1 = localStorage.getItem('baudrateph');
+			var mod_val2 = localStorage.getItem('configurationph');
+			if (mod_val1 == "") {
+				alert("please select Baudrate");
+				document.getElementById("brr").focus();
+				return true
+			}
+			if (mod_val2 == "") {
+				alert("please select configuration");
+				document.getElementById("cff").focus();
+				return true
+			}
+		}
+
+		function slavelocal() {
+			var SlaveCount = document.getElementById("slavecount").value;
+			for (d = 0; d < SlaveCount; d++) {
+				localStorage.setItem('sid' + d, document.getElementById('sinp' + d).value);
+			}
+
+		}
+		function slaveTable() {
+			var SlaveCount = localStorage.getItem('slavecountph');
+			document.getElementById("c").value = SlaveCount;
+			for (var d = 0; d < 9; d++) {
+				for (var g = 0; g < SlaveCount; g++) {
+					var Channel1 = document.getElementById("c" + g).value;
+					for (var h = 0; h < Channel1; h++) {
+						if (localStorage.getItem('tr' + d + 'h' + h + g)) {
+							localStorage.removeItem('tr' + d + 'h' + h + g)
+						}
+					}
+				}
+			}
+			for (var k = 0; k < SlaveCount; k++) {
+				var Channel = document.getElementById("c" + k).value;
+				for (var l = 0; l < Channel; l++) {
+					localStorage.setItem('tr' + 0 + 'h' + l + k, document.getElementById('tr' + 0 + "h" + l + k).value);
+					localStorage.setItem('tr' + 1 + 'h' + l + k, document.getElementById('tr' + 1 + "h" + l + k).value);
+					localStorage.setItem('tr' + 2 + 'h' + l + k, document.getElementById('tr' + 2 + "h" + l + k).value);
+					localStorage.setItem('tr' + 3 + 'h' + l + k, document.getElementById('tr' + 3 + "h" + l + k).value);
+					localStorage.setItem('tr' + 4 + 'h' + l + k, document.getElementById('tr' + 4 + "h" + l + k).value);
+					localStorage.setItem('tr' + 5 + 'h' + l + k, document.getElementById('tr' + 5 + "h" + l + k).value);
+					localStorage.setItem('tr' + 6 + 'h' + l + k, document.getElementById('tr' + 6 + "h" + l + k).value);
+					localStorage.setItem('tr' + 7 + 'h' + l + k, document.getElementById('tr' + 7 + "h" + l + k).value);
+					localStorage.setItem('tr' + 8 + 'h' + l + k, document.getElementById('tr' + 8 + "h" + l + k).value);
+				}
+			}
+			for (var i = 0; i < 8; i++) {
+				if (document.getElementById("slavesummarydiv").contains(document.getElementById("siddiv" + i))) { document.getElementById("siddiv" + i).remove(); }
+			}
+			var SlaveCount = document.getElementById("slavecount").value;
+			for (var sid = 0; sid < SlaveCount; sid++) {
+				var siddiv = document.createElement('div');
+				siddiv.id = 'siddiv' + sid;
+				var sidlab = document.createElement('label');
+				sidlab.innerHTML = "<b>SID</b>";
+				var sidinp = document.createElement('input');
+				sidinp.type = 'text';
+				sidinp.style.width = '100px'
+				sidinp.value = document.getElementById("sinp" + sid).value;
+				sidinp.disabled = true;
+				sidlab.append(sidinp)
+				siddiv.appendChild(sidlab);
+
+				var slavesummarytable = document.createElement('table');
+				var brk = document.createElement('br');
+				var brk1 = document.createElement('br');
+				var brk2 = document.createElement('br');
+
+				var chtr = document.createElement('tr');
+				chtr.id = 'chtr' + sid;
+				var eptcell = document.createElement('th');
+				eptcell.style.width = "160px";
+				eptcell.innerHTML = "           ";
+				chtr.appendChild(eptcell);
+
+				var chtrRgType = document.createElement('tr');
+				var Regtype = document.createElement('th');
+				Regtype.innerHTML = "Register Type:";
+				Regtype.style.width = "160px";
+				chtrRgType.appendChild(Regtype);
+
+				var chtrRgAdd = document.createElement('tr');
+				var RegAddr = document.createElement('th');
+				RegAddr.innerHTML = "Register Address:";
+				RegAddr.style.width = "160px";
+				chtrRgAdd.appendChild(RegAddr);
+
+				for (var cc = 0; cc < document.getElementById("c" + sid).value; cc++) {
+
+					tob = document.getElementById("tr" + 0 + "h" + cc + sid).value;
+					aob = document.getElementById("tr" + 1 + "h" + cc + sid).value;
+
+					var chth = document.createElement('th');
+					chth.innerHTML = "Channel-" + (cc + 1);
+					chth.style.width = "120px"
+					chtr.appendChild(chth);
+
+					var rttd = document.createElement('td');
+					var rtinp = document.createElement('input');
+					rtinp.type = 'text';
+					rtinp.value = tob;
+					rtinp.disabled = true;
+					rtinp.style.width = "120px";
+					rttd.appendChild(rtinp);
+					chtrRgType.appendChild(rttd);
+
+					var ratd = document.createElement('td');
+					var rainp = document.createElement('input');
+					rainp.type = 'text';
+					rainp.value = aob;
+					rainp.disabled = true;
+					rainp.style.width = '120px';
+					ratd.appendChild(rainp);
+					chtrRgAdd.appendChild(ratd);
+				}
+				slavesummarytable.appendChild(chtr);
+				slavesummarytable.appendChild(brk);
+				slavesummarytable.appendChild(chtrRgType);
+				slavesummarytable.appendChild(brk1);
+				slavesummarytable.appendChild(chtrRgAdd);
+				slavesummarytable.appendChild(brk2);
+				siddiv.appendChild(slavesummarytable);
+				document.getElementById("slavesummarydiv").appendChild(siddiv);
+
+			}
+		}
+
+		function validateF2() {
+			if (localStorage.getItem('slavecountph') == "") {
+				alert('Please Select Slave Count');
+				document.getElementById('slavecount').focus();
+			}
+		}
+		/////////////////////////////////////////////////////////////
+		function fn2() {
+			obj = document.getElementsByName("DM");
+			console.log(obj)
+			//var ui=0;
+			var ok = document.createElement('p');
+			if (document.getElementById("dmhead").contains(document.getElementById("ok1"))) {
+				document.getElementById("ok1").remove();
+			}
+
+			if (localStorage.getItem('mqttcheck') == 1) {
+				ok.innerHTML = "<p><b>MQTT</b></p>";
+				ok.id = "ok1";
+				ok.style.textAlign = "center"
+				document.getElementById("dmhead").appendChild(ok);
+			}
+			if (localStorage.getItem('mqttcheck') == 0) {
+				ok.innerHTML = "<p><b>WEB SOCKET</b></p>";
+				ok.id = "ok1";
+				ok.style.textAlign = "center"
+				document.getElementById("dmhead").appendChild(ok);
+			}
+			var sumarr1 = ["MQTT Server", "MQTT Port", "Client ID", "User Name", "Password", "MQTT Topic"];
+			var sumarr2 = ["SV", "PT", "ID", "UN", "PW", "TP"];
+
+			for (var i = 0; i < 6; i++) {
+				if (localStorage.getItem('mqttcheck') == 1) {
+					if (document.contains(document.getElementById("x1_mode" + i))) {
+
+						document.getElementById("x1_mode" + i).remove();
+					}
+
+					var x1 = document.createElement("div");
+					x1.className = "row";
+					x1.id = "x1_mode" + i;
+
+					// create label for port
+					var xl1 = document.createElement("div");
+					xl1.className = "col-10";
+					var xll1 = document.createElement("label");
+					xll1.append(sumarr1[i]);
+					xl1.appendChild(xll1);
+					x1.appendChild(xl1);
+
+					// create input text for port
+					var xi1 = document.createElement("div");
+					xi1.className = "col-90";
+					var xii1 = document.createElement("input");
+					xii1.type = "text";
+					xii1.disabled = true
+					xii1.name = sumarr2[i];
+					xii1.id = "op" + i;
+					xi1.appendChild(xii1);
+					x1.appendChild(xi1);
+					document.getElementById("kiki").appendChild(x1);
+					//opera[0].firstChild.value;
+
+
+					ui = ui + 1;
+				}
+
+				if (localStorage.getItem('mqttcheck') == 0) {
+
+					if (document.contains(document.getElementById("x1_mode" + i))) {
+						document.getElementById("x1_mode" + i).remove();
+					}
+				}
+			}
+			var opera = document.getElementsByClassName("col-91");
+			localStorage.setItem('opera' + 0, opera[0].firstChild.value)
+			localStorage.setItem('opera' + 1, opera[1].firstChild.value)
+			localStorage.setItem('opera' + 2, opera[2].firstChild.value)
+			localStorage.setItem('opera' + 3, opera[3].firstChild.value)
+			localStorage.setItem('opera' + 4, opera[4].firstChild.value)
+			localStorage.setItem('opera' + 5, opera[5].firstChild.value)
+			document.getElementById("op0").value =
+				opera[0].firstChild.value;
+			document.getElementById("op1").value =
+				opera[1].firstChild.value;
+			document.getElementById("op2").value =
+				opera[2].firstChild.value;
+			document.getElementById("op3").value =
+				opera[3].firstChild.value;
+			document.getElementById("op4").value =
+				opera[4].firstChild.value;
+			document.getElementById("op5").value =
+				opera[5].firstChild.value;
+		}
+		function validateF3() {
+			var r = new RegExp("^[\\d+]{1,}$");
+			if (!localStorage.getItem('opera' + 1).match(r)) {
+				alert("Mqtt Port accepts only integers");
+				document.getElementById("mqttelem" + 1).focus();
+				return true;
+			}
+		}
+		function fn4() {
+			if (document.getElementById("DM1").contains(document.getElementById("DMIN"))) {
+				document.getElementById("DMIN").remove();
+			}
+			if (document.contains(document.getElementById("c1_mode" + 0))) {
+				document.getElementById("c1_mode" + 0).remove();
+			}
+			if (document.contains(document.getElementById("c1_mode" + 1))) {
+				document.getElementById("c1_mode" + 1).remove();
+			}
+			if (document.contains(document.getElementById("c1_mode" + 2))) {
+				document.getElementById("c1_mode" + 2).remove();
+			}
+			if (document.contains(document.getElementById("c1_mode" + 3))) {
+				document.getElementById("c1_mode" + 3).remove();
+			}
+			if (document.contains(document.getElementById("c1_mode" + 4))) {
+				document.getElementById("c1_mode" + 4).remove();
+			}
+			if (localStorage.getItem('connectivitycheck') == 'E') {
+				var eth = document.createElement('p');
+				eth.innerHTML = "<p id=" + "DMIN" + "><b>Ethernet</b></p>";
+				eth.style.textAlign = "center"
+				document.getElementById("DM1").appendChild(eth);
+			}
+			if (localStorage.getItem('connectivitycheck') == 'W') {
+				var eth = document.createElement('p');
+				eth.innerHTML = "<p id=" + "DMIN" + "><b>WiFi</b></p>";
+				eth.style.textAlign = "center"
+				document.getElementById("DM1").appendChild(eth);
+			}
+			if (localStorage.getItem('connectivitycheck') == 'C') {
+				var eth = document.createElement('p');
+				eth.innerHTML = "<p id=" + "DMIN" + "><b>Cellular</b></p>";
+				eth.style.textAlign = "center"
+				document.getElementById("DM1").appendChild(eth);
+			}
+
+			var connectivitylabels = ["SSID", "Password", "APN", "UserName", "Password"];
+
+			for (var i = 0; i < 2; i++) {
+				if (localStorage.getItem('connectivitycheck') == 'W') {
+
+					var j1 = document.createElement("div");
+					j1.className = "row";
+					j1.id = "c1_mode" + i;
+					//document.getElementById("DataMode").appendChild(x1);
+
+					// create label for port
+					var jl1 = document.createElement("div");
+					jl1.className = "col-10";
+					var jll1 = document.createElement("label");
+					jll1.append(connectivitylabels[i]);
+					jl1.appendChild(jll1);
+					j1.appendChild(jl1);
+
+					// create input text for port
+					var ji1 = document.createElement("div");
+					ji1.className = "col-90";
+					var jii1 = document.createElement("input");
+					jii1.type = "text";
+					jii1.disabled = true
+					jii1.name = connectivitylabels[i];
+					jii1.id = "p1_mode" + i;
+					ji1.appendChild(jii1);
+					j1.appendChild(ji1);
+					document.getElementById("kiki1").appendChild(j1);
+					//opera[0].firstChild.value;
+					ui = ui + 1;
+				}
+				if (localStorage.getItem('connectivitycheck') == 'E') {
+
+					if (document.contains(document.getElementById("c1_mode" + i))) {
+						document.getElementById("c1_mode" + i).remove();
+					}
+				}
+			}
+			if (localStorage.getItem('connectivitycheck') == 'W') {
+				var opera1 = document.getElementsByClassName("col-89");
+				localStorage.setItem('opera1' + 0, opera1[0].firstChild.value);
+				localStorage.setItem('opera1' + 1, opera1[1].firstChild.value);
+				document.getElementById("p1_mode0").value =
+					opera1[0].firstChild.value;
+				document.getElementById("p1_mode1").value =
+					opera1[1].firstChild.value;
+			}
+
+			for (var i = 2; i < 5; i++) {
+				if (localStorage.getItem('connectivitycheck') == 'C') {
+
+					var e1 = document.createElement("div");
+					e1.className = "row";
+					e1.id = "c1_mode" + i;
+					//document.getElementById("DataMode").appendChild(x1);
+
+					// create label for port
+					var el1 = document.createElement("div");
+					el1.className = "col-10";
+					var ell1 = document.createElement("label");
+					ell1.append(connectivitylabels[i]);
+					el1.appendChild(ell1);
+					e1.appendChild(el1);
+
+					// create input text for port
+					var ei1 = document.createElement("div");
+					ei1.className = "col-90";
+					var eii1 = document.createElement("input");
+					eii1.type = "text";
+					eii1.name = connectivitylabels[i];
+					eii1.id = "p1_mode" + i;
+					eii1.disabled = true;
+					ei1.appendChild(eii1);
+					e1.appendChild(ei1);
+					document.getElementById("kiki2").appendChild(e1);
+					ui = ui + 1;
+				}
+
+				if (localStorage.getItem('connectivitycheck') == 'E') {
+
+					if (document.contains(document.getElementById("c1_mode" + i))) {
+						document.getElementById("c1_mode" + i).remove();
+					}
+				}
+
+			}
+			if (localStorage.getItem('connectivitycheck') == 'C') {
+				var opera2 = document.getElementsByClassName("col-89");
+				localStorage.setItem('opera2' + 0, opera2[0].firstChild.value);
+				localStorage.setItem('opera2' + 1, opera2[1].firstChild.value);
+				localStorage.setItem('opera2' + 2, opera2[2].firstChild.value);
+				document.getElementById("p1_mode2").value =
+					opera2[0].firstChild.value;
+				document.getElementById("p1_mode3").value =
+					opera2[1].firstChild.value;
+				document.getElementById("p1_mode4").value =
+					opera2[2].firstChild.value;
+			}
+		}
+
+		function fn3() {
+			localStorage.setItem('scanrateph', document.getElementById("scanrate").value)
+			document.getElementById("a1").value = localStorage.getItem('scanrateph');
+
+			localStorage.setItem('publishrateph', document.getElementById("publishrate").value)
+			document.getElementById("a2").value = localStorage.getItem('publishrateph');
+
+			localStorage.setItem('lograteph', document.getElementById("lograte").value)
+			document.getElementById("a3").value = localStorage.getItem('lograteph');
+		}
+		function validateF5() {
+			var r = new RegExp("^[\\d+]{1,}$");
+			if (!localStorage.getItem('scanrateph').match(r)) {
+				alert("Scan Rate accepts only integers");
+				document.getElementById('scanrate').focus();
+				return true;
+			}
+			if (!localStorage.getItem('publishrateph').match(r)) {
+				alert("Publish Rate accepts only integers");
+				document.getElementById("publishrate").focus();
+				return true;
+			}
+			if (!localStorage.getItem('lograteph').match(r)) {
+				alert("Log Rate accepts only integers");
+				document.getElementById("lograte").focus();
+				return true;
+			}
+		}
+	</script>
+	<!--##########################################################-->
+
+	<div id="dvTable"></div>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+	<script src="json-formdata.js"></script>
+	<script>
+
+		var form0 = document.forms[0];
+		form0.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', '/serial');
+			xhr.setRequestHeader('Content-Type', 'serial/json');
+			//var jjj = JSON.stringify(new JSONFormData(form0).formData);
+			//alert(jjj)
+			xhr.send(JSON.stringify(new JSONFormData(form0).formData));
+			xhr.addEventListener('loadend', function () {
+				// Callback...
+			}, false);
+		}, false);
+
+		var form1 = document.forms[1];
+		form1.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', '/channels');
+			xhr.setRequestHeader('Content-Type', 'channels/json');
+			//var jjj = JSON.stringify(new JSONFormData(form1).formData);
+			//localStorage.setItem('form1json',jjj);
+			//alert(jjj)
+			xhr.send(JSON.stringify(new JSONFormData(form1).formData));
+			xhr.addEventListener('loadend', function () {
+				// Callback...
+			}, false);
+		}, false);
+		var form2 = document.forms[2];
+		form2.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', '/datamode');
+			xhr.setRequestHeader('Content-Type', 'datamode/json');
+			//var jjj = JSON.stringify(new JSONFormData(form2).formData);
+			//alert(jjj)
+			xhr.send(JSON.stringify(new JSONFormData(form2).formData));
+			xhr.addEventListener('loadend', function () {
+				// Callback...
+			}, false);
+		}, false);
+
+		var form3 = document.forms[3];
+		form3.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', '/connectivity');
+			xhr.setRequestHeader('Content-Type', 'connectivity/json');
+			//var jjj = JSON.stringify(new JSONFormData(form3).formData);
+			//alert(jjj)
+			xhr.send(JSON.stringify(new JSONFormData(form3).formData));
+			xhr.addEventListener('loadend', function () {
+				// Callback...
+			}, false);
+		}, false);
+
+		var form4 = document.forms[4];
+		form4.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', '/application');
+			xhr.setRequestHeader('Content-Type', 'application/json');
+			//var jjj = JSON.stringify(new JSONFormData(form4).formData);
+			//alert(jjj);
+			xhr.send(JSON.stringify(new JSONFormData(form4).formData));
+			xhr.addEventListener('loadend', function () {
+				// Callback...
+			}, false);
+		}, false);
+
+	</script>
+
+	<script type="text/javascript">
+		function submitform() {
+			var formData = JSON.stringify($("#ChannelForm").serializeArray());
+			alert(formData);
+		}
+
+		function openTab(evt, cityName) {	//function open tab called at creation of tabs at starting 
+			// Declare all variables
+			var i, tabcontent, tablinks;
+
+			// Get all elements with class="tabcontent" and hide them
+			tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+
+			// Get all elements with class="tablinks" and remove the class "active"
+			tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+
+			// Show the current tab, and add an "active" class to the button that opened the tab
+			document.getElementById(cityName).style.display = "block";
+			evt.currentTarget.className += " active";
+
+			//var form = document.querySelector('form');				
+			//alert("form selected: ");				
+		}
+
+		/* Modbus Tab related fucntion handlers
+		##########################################################################################################################
+		##########################################################################################################################
+		##########################################################################################################################
+		##########################################################################################################################
+		*/
+		function GenerateSlaveTable() {
+			for (k = 0; k < 8; k++) {
+				if (document.getElementById("modbusform").contains(document.getElementById("sdiv" + k))) {
+					document.getElementById("sdiv" + k).remove();
+				}
+			}
+			var SlaveCount = document.getElementById("slavecount").value;
+			localStorage.setItem('slavecountph', SlaveCount)
+			document.getElementById("c").value = localStorage.getItem("slavecountph");
+			//create slave_id and channel_count labels and append to div of id "slaveid"
+			for (i = 0; i < SlaveCount; i++) {
+				var slavediv = document.createElement("div");
+				slavediv.id = "sdiv" + i;
+				var slab = document.createElement("label");
+				slab.innerHTML = "Slave Id";
+				var sinp = document.createElement("input");
+				sinp.name = "slave" + (i) + "[SlaveId]";
+				sinp.type = "text";
+				sinp.id = "sinp" + i;
+				sinp.required = true
+				sinp.style["width"] = "100px";
+				slab.appendChild(sinp);
+				slavediv.appendChild(slab);//to create slave id box
+
+				var clab = document.createElement("label")//to create channel count label
+				clab.innerHTML = "Channel Count";
+				var cinp = document.createElement("select");
+				cinp.id = "c" + i;
+				cinp.type = "option";
+				cinp.appendChild(new Option(""));
+				cinp.appendChild(new Option(""));
+				cinp.appendChild(new Option("1"));
+				cinp.appendChild(new Option("2"));
+				cinp.appendChild(new Option("3"));
+				cinp.appendChild(new Option("4"));
+				cinp.appendChild(new Option("5"));
+				cinp.appendChild(new Option("6"));
+				cinp.appendChild(new Option("7"));
+				cinp.appendChild(new Option("8"));
+				//cinp.appendChild(new Option(cinp.id));//chaneel-id
+				cinp.onchange = channeltable;
+				cinp.name = "slave" + (i) + "[ChannelCount]";
+				cinp.required = true;
+				//cinp.onchange=EnableSelectedChannel;
+				cinp.style["width"] = "100px";
+				clab.appendChild(cinp);
+				slavediv.appendChild(clab);
+				document.getElementById("modbusform").appendChild(slavediv);
+				var br1 = document.createElement("br");
+
+			}
+		}
+		// A function to create channel table for no of channels selected at each slave
+		function channeltable() {
+			var ChannelIn = this.id[1];   //channelIn stores the value i (from above for loop) i.e., it is CHANNELCOUNT index
+			localStorage.setItem('c-count' + ChannelIn, document.getElementById('c' + ChannelIn).value)
+
+			if (document.getElementById("sdiv" + ChannelIn).contains(document.getElementById("ctable" + ChannelIn))) {
+				document.getElementById("ctable" + ChannelIn).remove();
+			}// if condition to remove extra ocuurances 
+			var ctable = document.createElement("table"); // ctable is channel table
+			ctable.id = "ctable" + ChannelIn;
+			//create a row having "CHANNEL HEADINGS"
+			var tr0 = document.createElement("tr");// tr0 is the first row of the table
+			var emptycell = document.createElement("th");
+			emptycell.style.width = "150px"
+			emptycell.innerHTML = "         "; // an empty cell(very first cell in the table)
+			tr0.appendChild(emptycell);
+			for (q = 0; q < 8; q++) {
+				var cth = document.createElement("th"); //cth is the th tag for creating channel headings
+				cth.style.width = "150px"
+				cth.innerHTML = "CHANNEL-" + (q + 1);//channel headers
+				tr0.appendChild(cth);
+			}
+			ctable.appendChild(tr0);
+			var modlabels = ["RegType", "RegAddr", "RegCount", "StartAddr", "Multiplier", "Offset", "Variable Name", "Variable Type", "Unit"];
+			for (q = 0; q < 9; q++) {
+				var tr_i = document.createElement("tr"); // tr_i is the tr tag for 7 rows having 7 parameters
+				tr_i.id = "tr" + q;
+				tr_i.style.height = "40px";
+				var tr_ih = document.createElement("th");// tr_ih refers to each coloumn in i'th row
+				tr_ih.id = "tr" + q + "h";
+				tr_ih.className = "trh";
+				tr_ih.innerHTML = modlabels[q];
+				tr_i.appendChild(tr_ih);
+				/// To create input boxes
+				for (e = 0; e < 8; e++) {
+					var tdq = document.createElement("td");
+					if (q != 7 && q != 0) {  // for variable type it is not input type text, it is a dropdown(select)
+						var inp = document.createElement("input");
+						inp.id = tr_ih.id + e + ChannelIn;
+						inp.required = true;
+						inp.name = "slave" + ChannelIn + "[" + modlabels[q] + "]";
+					}
+
+					else if (q == 7) {
+						var inp = document.createElement("select");
+						inp.id = tr_ih.id + e + ChannelIn;
+						inp.required = true;
+						inp.name = "slave" + ChannelIn + "[" + modlabels[q] + "]";
+						inp.type = "option";
+						inp.appendChild(new Option(""));
+						inp.appendChild(new Option("Swapped Float"));
+						inp.appendChild(new Option("Float"));
+						inp.appendChild(new Option("Signed Integer"));
+						inp.appendChild(new Option("Integer"));
+						//inp.appendChild(new Option(inp.id));
+					}
+					else if (q == 0) {
+						var inp = document.createElement("select");
+						inp.id = tr_ih.id + e + ChannelIn;
+						inp.required = true;
+						inp.name = "slave" + ChannelIn + "[" + modlabels[q] + "]";
+						inp.type = "option";
+						inp.appendChild(new Option(""));
+						inp.appendChild(new Option("01: Coil Status"));
+						inp.appendChild(new Option("02: Input Status"));
+						inp.appendChild(new Option("03: Holding Register"));
+						inp.appendChild(new Option("04: Input Regestier"));
+						//inp.appendChild(new Option(inp.id));
+					}
+
+					inp.type = "text";
+					//inp.value = inp.id;
+					tdq.appendChild(inp);
+					if (e + 1 > this.value) { inp.disabled = true }
+					tr_i.appendChild(tdq);
+				}
+				ctable.appendChild(tr_i);
+			}
+			document.getElementById("sdiv" + ChannelIn).appendChild(ctable);
+		}
+		function thisfun(g) {
+			var ChannelIn = g;   //channelIn stores the value i (from above for loop) i.e., it is CHANNELCOUNT index
+			localStorage.setItem('c-count' + ChannelIn, document.getElementById('c' + ChannelIn).value)
+			if (document.getElementById("sdiv" + ChannelIn).contains(document.getElementById("ctable" + ChannelIn))) {
+				document.getElementById("ctable" + ChannelIn).remove();
+			}// if condition to remove extra ocuurances 
+			var ctable = document.createElement("table"); // ctable is channel table
+			ctable.id = "ctable" + ChannelIn;
+			//create a row having "CHANNEL HEADINGS"
+			var tr0 = document.createElement("tr");// tr0 is the first row of the table
+			var emptycell = document.createElement("th");
+			emptycell.style.width = "150px"
+			emptycell.innerHTML = "         "; // an empty cell(very first cell in the table)
+			tr0.appendChild(emptycell);
+			for (q = 0; q < 8; q++) {
+				var cth = document.createElement("th"); //cth is the th tag for creating channel headings
+				cth.style.width = "150px"
+				cth.innerHTML = "CHANNEL-" + (q + 1);//channel headers
+				tr0.appendChild(cth);
+			}
+			ctable.appendChild(tr0);
+			var modlabels = ["RegType", "RegAddr", "RegCount", "StartAddr", "Multiplier", "Offset", "Variable Name", "Variable Type", "Unit"];
+			for (q = 0; q < 9; q++) {
+				var tr_i = document.createElement("tr"); // tr_i is the tr tag for 7 rows having 7 parameters
+				tr_i.id = "tr" + q;
+				tr_i.style.height = "40px";
+				var tr_ih = document.createElement("th");// tr_ih refers to each coloumn in i'th row
+				tr_ih.id = "tr" + q + "h";
+				tr_ih.className = "trh";
+				tr_ih.innerHTML = modlabels[q];
+				tr_i.appendChild(tr_ih);
+				/// To create input boxes
+				for (e = 0; e < 8; e++) {
+					var tdq = document.createElement("td");
+					if (q != 7 && q != 0) {  // for variable type it is not input type text, it is a dropdown(select)
+						var inp = document.createElement("input");
+						inp.id = tr_ih.id + e + ChannelIn;
+						inp.required = true;
+						inp.name = "slave" + ChannelIn + "[" + modlabels[q] + "]";
+					}
+
+					else if (q == 7) {
+						var inp = document.createElement("select");
+						inp.id = tr_ih.id + e + ChannelIn;
+						inp.required = true;
+						inp.name = "slave" + ChannelIn + "[" + modlabels[q] + "]";
+						inp.type = "option";
+						inp.appendChild(new Option(""));
+						inp.appendChild(new Option("Swapped Float"));
+						inp.appendChild(new Option("Float"));
+						inp.appendChild(new Option("Signed Integer"));
+						inp.appendChild(new Option("Integer"));
+						//inp.appendChild(new Option(inp.id));
+					}
+					else if (q == 0) {
+						var inp = document.createElement("select");
+						inp.id = tr_ih.id + e + ChannelIn;
+						inp.required = true;
+						inp.name = "slave" + ChannelIn + "[" + modlabels[q] + "]";
+						inp.type = "option";
+						inp.appendChild(new Option(""));
+						inp.appendChild(new Option("01: Coil Status"));
+						inp.appendChild(new Option("02: Input Status"));
+						inp.appendChild(new Option("03: Holding Register"));
+						inp.appendChild(new Option("04: Input Regestier"));
+						//inp.appendChild(new Option(inp.id));
+					}
+
+					inp.type = "text";
+					//inp.value = inp.id;
+					tdq.appendChild(inp);
+					if (e + 1 > document.getElementById('c' + g).value) { inp.disabled = true }
+					tr_i.appendChild(tdq);
+				}
+				ctable.appendChild(tr_i);
+			}
+			document.getElementById("sdiv" + ChannelIn).appendChild(ctable);
+		}
+		function validatechannel() {
+			var modlabels = ["RegType", "RegAddr", "RegCount", "StartAddr", "Multiplier", "Offset", "Variable Name", "Variable Type", "Unit"];
+			SlaveCount = localStorage.getItem("slavecountph");
+			var r = new RegExp("^([0-9]+([.][0-9]*)?|[.][0-9]+)$");
+			for (var i = 0; i < SlaveCount; i++) {
+				if (!document.getElementById("sinp" + i).value.match(r)) {
+					alert("SlaveID " + (i + 1) + " accepts Integer or Float");
+					document.getElementById("sinp" + i).focus();
+					return true;
+				}
+				for (q = 0; q < 9; q++) {
+					for (e = 0; e < 8; e++) {
+						if (q == 1 || q == 2 || q == 3 || q == 4 || q == 5) {
+							if (!document.getElementById("tr" + q + "h" + e + i).disabled) {
+								if (!document.getElementById("tr" + q + "h" + e + i).value.match(r)) {
+									alert(modlabels[q] + " " + "accepts Integer or Float");
+									document.getElementById("tr" + q + "h" + e + i).focus();
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+
+		/* Data mode Tab related fucntion handlers */
+		function GenerateMqttInfo() {
+
+			var Labels = ["MQTT Server", "MQTT Port", "Client ID", "User Name", "Password", "MQTT Topic"];
+			var JsonName = ["SV", "PT", "ID", "UN", "PW", "TP"];
+			//var mqtt_arr=[];
+			for (var i = 0; i < 6; i++) {
+
+				if (document.getElementById("Mqtt").checked) {
+					localStorage.setItem('mqttcheck', 1);
+					// create row for port
+					var divElementRow = document.createElement("div");
+					console.log(divElementRow);
+					divElementRow.className = "row";
+					divElementRow.id = "DMODE_ID" + i;
+					console.log(divElementRow.id);
+					document.getElementById("DataMode").appendChild(divElementRow);
+					//console.log(document.getElementByLabel("MQTT Server"));
+
+					// create label for port
+					var divElementLabel = document.createElement("div");
+					divElementLabel.className = "col-10";
+					var LabelElement = document.createElement("label");
+					LabelElement.append(Labels[i]);
+					divElementLabel.appendChild(LabelElement);
+					divElementRow.appendChild(divElementLabel);
+
+					// create input text for port
+					var divElementInput = document.createElement("div");
+					divElementInput.className = "col-91";
+					InputElement = document.createElement("input");
+					InputElement.type = "text";
+					InputElement.id = "mqttelem" + i;
+					//InputElement.pattern = "[a-zA-Z0-9]{0,}";
+					if (i!=2 && i!=3 && i!=4) {
+						InputElement.required = true;
+					}
+					InputElement.name = JsonName[i];
+					//InputElement.value="";
+
+					mqtt_arr[i] = InputElement.value;
+					console.log(mqtt_arr[i]);
+					//mqtt_arr[i]=t;
+					console.log(InputElement.value);
+					divElementInput.appendChild(InputElement);
+					divElementRow.appendChild(divElementInput);
+
+				} if (document.getElementById("WbSk").checked) {
+					localStorage.setItem('mqttcheck', 0);
+					if (document.getElementById("DataMode").contains(document.getElementById("DMODE_ID" + i))) {
+						document.getElementById("DMODE_ID" + i).remove();
+					}
+				}
+			}
+		}
+
+		/* Connectivity Tab related fucntion handlers */
+
+		function GenerateConnectivityInfo() {
+			var Labels = ["SSID", "Password", "APN", "User Name", "Password"];
+			var JsonName = ["ID", "PW", "AP", "UN", "PW"];
+
+			var index = 0;
+			var LastIndex = 5;
+
+			for (index = 0; index < LastIndex; index++) {
+
+				if (document.contains(document.getElementById("CN_ID" + index))) {
+
+					document.getElementById("CN_ID" + index).remove();
+				}
+			}
+			if (document.getElementById("Ethernet").checked) {
+				localStorage.setItem('connectivitycheck', 'E')
+				index = 0;
+				LastIndex = 0;
+			}
+			if (document.getElementById("WiFi").checked) {
+				localStorage.setItem('connectivitycheck', 'W');
+				index = 0;
+				LastIndex = 2;
+			}
+			if (document.getElementById("Cellular").checked) {
+				localStorage.setItem('connectivitycheck', 'C');
+				index = 2;
+				LastIndex = 5;
+			}
+
+			for (index; index < LastIndex; index++) {
+
+				// create row for port
+				var divElementRow = document.createElement("div");
+				divElementRow.className = "row";
+				divElementRow.id = "CN_ID" + index;
+				document.getElementById("Connectivity").appendChild(divElementRow);
+
+				// create label for port
+				var divElementLabel = document.createElement("div");
+				divElementLabel.className = "col-10";
+				var LabelElement = document.createElement("label");
+				LabelElement.append(Labels[index]);
+				divElementLabel.appendChild(LabelElement);
+				divElementRow.appendChild(divElementLabel);
+
+				// create input text for port
+				var divElementInput = document.createElement("div");
+				divElementInput.className = "col-89";
+				var InputElement = document.createElement("input");
+				InputElement.type = "text";
+				if(index!=3 && index!=4){
+				InputElement.required = true;}
+				InputElement.name = JsonName[index];
+				divElementInput.appendChild(InputElement);
+				divElementRow.appendChild(divElementInput);
+			}
+		}
+
+		function liveviewtable() {
+			var SlaveCount = document.getElementById("slavecount").value;
+			var count = 0;
+			for (var p = 0; p < SlaveCount; p++) {
+				var y = 8;
+				for (var q = 0; q < y; q++) {
+					if (document.getElementById("livetable").contains(document.getElementById("row1" + (p) + (q)))) {
+						document.getElementById("row1" + (p) + (q)).remove();
+					}
+				}
+			}
+			for (var i = 0; i < SlaveCount; i++) {
+				var x = localStorage.getItem('c-count' + i)
+				for (var j = 0; j < x; j++) {
+					count = count + 1
+					var tr_i = document.createElement("tr");
+					//tr_i.style.width = "80px";
+
+					tr_i.id = "row1" + (i) + (j);
+
+					var td0 = document.createElement("td");
+					td0.style.width = "40px";
+					td0.className = "livetr";
+					td0.id = tr_i.id + 0;
+
+					var td1 = document.createElement("td");
+					td1.style.width = "40px";
+					td1.className = "livetr";
+					td1.id = tr_i.id + 1;
+
+					var td2 = document.createElement("td");
+					td2.style.width = "40px";
+					td2.className = "livetr"
+					td2.id = tr_i.id + 2;
+
+
+					var td3 = document.createElement("td");
+					td3.style.width = "40px";
+					td3.className = "livetr"
+					td3.id = tr_i.id + 3;
+
+
+					var td4 = document.createElement("td");
+					td4.style.width = "40px";
+					td4.className = "livetr"
+					td4.id = tr_i.id + 4;
+
+					td0.innerHTML = document.getElementById("sinp"+i).value;
+					td1.innerHTML = count;
+					td2.innerHTML = document.getElementById("tr" + 6 + "h" + j + i).value;
+					td3.innerHTML = "";
+					td4.innerHTML = document.getElementById("tr" + 8 + "h" + j + i).value;
+
+					tr_i.appendChild(td0);
+					tr_i.appendChild(td1);
+					tr_i.appendChild(td2);
+					tr_i.appendChild(td3);
+					tr_i.appendChild(td4);
+					document.getElementById("livetable").appendChild(tr_i);
+				}
+			}
+		}
+	</script>
+
+</body>
+
+</html>
